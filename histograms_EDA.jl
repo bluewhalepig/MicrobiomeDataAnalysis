@@ -18,6 +18,3 @@ hist(bar_labels= "Counts of CogScores", cogScores, bins = 15, normalization = :n
 #Plot a scatterplot of cogScores vs age 
 scatter(ages, cogScores, title ="Cognitive Scores vs Age", xlabel="Age (months)", ylabel="Cognitive Scores")
 
-
-#build blank figure 
-#Axis object 
