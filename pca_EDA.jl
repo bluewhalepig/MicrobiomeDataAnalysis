@@ -2,8 +2,6 @@
 
 using MultivariateStats
 using CairoMakie
-#using Plots
-#using PlotlyJS
 using RDatasets
 using CSV
 using Microbiome
@@ -54,13 +52,7 @@ ax = Axis(fig[1,1])
 #Modifies the axis to contain data 
 sc_age = scatter!(ax, model.U[:,1], model.U[:,2], color = data.ageMonths, alpha=0.5)
 
-#Coloring plot by age
-scatter(model.U[:,1], model.U[:,2], color = data.ageMonths, alpha=0.5)
 
-#using PlotlyJS --> Layout(title="relationship between samples based on taxa abundances and colored by child age in months", yaxis_title="MDS2", xaxis_title="MDS1")
-title!("relationship between samples based on taxa abundances and colored by child age in months")
-xlabel!("MDS1")
-ylabel!("MDS2")
 
 #Coloring plot by cognitive scores
 scatter(model.U[:,1], model.U[:,2], color = data.cogScore, alpha=0.5)
