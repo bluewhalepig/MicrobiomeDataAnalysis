@@ -1,0 +1,5 @@
+#List of things that git will ignore.. ie sensitive data in csv format
+*/*.tsv
+*/*.xlsx
+*/*.csv 
+#^^ should be put in every .gitignore file!! 
