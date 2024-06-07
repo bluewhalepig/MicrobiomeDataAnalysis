@@ -8,7 +8,7 @@ using Microbiome
 using Distances #PlotlyJS doesn't install...
 
 #Load the data into matrix (data format that PCA takes)
-data = CSV.read("sample_data.csv", DataFrame) 
+abundancedata = CSV.read("sample_data.csv", DataFrame) 
 abundance_data = select(data, Not(:cogScore, :subject, :timepoint, :sex, :education, :ageMonths))
 abundance_data = Matrix(abundance_data)
 
