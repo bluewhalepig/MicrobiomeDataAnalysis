@@ -45,7 +45,7 @@ lines(model.λ ./sum(model.λ)) #result: elbow at 3
 
 #Plotting PC1 and PC2 of PCoA result
 #model.U contains the scores of the samples on the principal components
-#Create figure
+#Create figure 
 fig = Figure()
 
 #Create axis and label them 
