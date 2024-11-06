@@ -9,6 +9,9 @@
 using Leap #must be in Project mode start terminal by:  julia --project=.
 using CSV
 using DataFrames 
+using Distances
+using CairoMakie 
+using MultivariateStats
 
 # Path to the file of sequencing data is in /grace 
 manual_path= "/grace/sequencing/processed/mgx/metaphlan"
