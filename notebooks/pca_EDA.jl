@@ -6,6 +6,7 @@ using RDatasets
 using CSV
 using Microbiome
 using Distances #PlotlyJS doesn't install...
+using Distributions 
 
 #Load the data into matrix (data format that PCA takes)
 data = CSV.read("data_ext/sample_data.csv", DataFrame) 
