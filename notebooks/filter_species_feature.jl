@@ -53,9 +53,6 @@ sample_names = samples(species_community_profile) #vector of MicrobiomeSample
 #Grad the processed Malawi sample csv data 
 malawi_table = CSV.read("data_ext/processed_output.csv", DataFrame)
 
-#For every row, we look at all the possibilities from 
-sum(Set(processed_table01.seqid) .∈ Ref(Set(processed_table02.seqid)))
-
 sample_names[1].sample_base 
 
 #for every row in community profile, grab only malawi samples
