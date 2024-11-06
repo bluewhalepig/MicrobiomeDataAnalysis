@@ -2,4 +2,6 @@
 */*.tsv
 */*.xlsx
 */*.csv 
+.CondaPkg
+Manifest.toml
 #^^ should be put in every .gitignore file!! 
