@@ -122,3 +122,10 @@ counts = [sum(col) for col in eachcol(greater_than_zero_bool)]
 ten_percent = 0.1*size(greater_than_zero_bool)[1] #10% 
 abundance_data_filter10 = abundance_data[:, counts .> ten_percent] #only 11 species??? 
 
+
+#How do I find the features that are most influencial to similarity and differences in the data?
+
+#Calculate correlation coefficients for pc1 and pc2
+corr_PC1 = cor(abundance_data, model.U[:,1])
+corr_PC2 = cor(abundance_data, model.U[:,2])
+
