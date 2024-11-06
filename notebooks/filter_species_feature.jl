@@ -72,5 +72,19 @@ sum(matches_bool) #331 matches!
 #Take species_community_profile and index it with matches boolean 
 result = species_community_profile[:, matches_bool]
 
-comm2wide(result) #formats as dataframe 
+result_dataframe = comm2wide(result) #formats as dataframe 
+
+#operations for microbiome data... notes from 10/16
+#comparing types --> is "type" a subtype of Number?
+### Float64 <: Number == true! 
+
+
+#Isolate the abundance data...
+#Find the DataType of columns in dataframe 
+column_types = eltype.(eachcol(result_dataframe))
+
+column_types .<: Number #boolean vector 
+#Filter using boolean vector so you only have Numerical columns (abundance data)  
+abundance_data_df = result_dataframe[:,column_types .<: Number]
+
 
