@@ -129,3 +129,13 @@ abundance_data_filter10 = abundance_data[:, counts .> ten_percent] #only 11 spec
 corr_PC1 = cor(abundance_data, model.U[:,1])
 corr_PC2 = cor(abundance_data, model.U[:,2])
 
+#Make pc1 and pc2 vectors
+corr_PC1 = vec(corr_PC1)
+corr_PC2 = vec(corr_PC2)
+
+#Create a DataFrame
+corss = DataFrame(:species => names(abundance_data_df), :corr_PC1 => corr_PC1, :corr_PC2 => corr_PC2)
+
+
+sorted_PC1 = sort(corss, :corr_PC1) #E coli??
+sorted_PC2 = sort(corss, :corr_PC2) 
