@@ -56,8 +56,6 @@ ax = Axis(fig[1,1],
 #Modifies the axis to contain data 
 sc_age = scatter!(ax, model.U[:,1], model.U[:,2], color = data.ageMonths, alpha=0.5)
 
-
-
 #Coloring plot by cognitive scores
 scatter(model.U[:,1], model.U[:,2], color = data.cogScore, alpha=0.5)
 #Layout(title="relationship between samples based on taxa abundances and colored by child cognitive scores", yaxis_title="MDS2", xaxis_title="MDS1")
