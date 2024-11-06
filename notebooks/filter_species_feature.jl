@@ -8,7 +8,7 @@
 
 using Leap #must be in Project mode start terminal by:  julia --project=.
 using CSV
-using DataFrames 
+using DataFrames
 using Distances
 using CairoMakie 
 using MultivariateStats
@@ -28,7 +28,6 @@ community_profile = Leap.load_raw_metaphlan(manual_path; replace_pattern=replace
 ####Taxon has 2 fields: (name, rank)
 
 ###What does load_raw_metaphlan do? -grabs which files fit the "description" of profile 
-
 
 ##Filter the features 
 #Filter the community profile so that only features remain
