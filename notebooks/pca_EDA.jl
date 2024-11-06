@@ -46,8 +46,12 @@ lines(model.λ ./sum(model.λ)) #result: elbow at 3
 #Create figure
 fig = Figure()
 
-#Create axis 
-ax = Axis(fig[1,1])
+#Create axis and label them 
+ax = Axis(fig[1,1],
+    title = "PCoA of abundance data",
+    xlabel = "MDS1",
+    ylabel = "MDS2"
+)
 
 #Modifies the axis to contain data 
 sc_age = scatter!(ax, model.U[:,1], model.U[:,2], color = data.ageMonths, alpha=0.5)
