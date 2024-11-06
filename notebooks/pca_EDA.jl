@@ -65,6 +65,9 @@ scatter(model.U[:,1], model.U[:,2], color = data.cogScore, alpha=0.5)
 #Coloring plot by sex
 scatter(model.U[:,1], model.U[:,2], color = data.sex, alpha=0.5)
 
+#Can save image in data file 
+save("data_ext/scatter_plot.png", fig)
+
 ##
 ##
 ##
