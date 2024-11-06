@@ -112,3 +112,13 @@ sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Bifidoba
 sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Escherichia_coli , alpha=0.5)
 #Save data in png file to display... (for some reason I can't use display function)
 save("data_ext/scatter_plot.png", fig)
+
+
+#Filter low prevelance species columns... this means that columns with its abundance in less than 10% of the rows will be eliminated
+#Boolean dataframe that sees if each element is greater than zero 
+greater_than_zero_bool = abundance_data .>0
+#Counts number of elements that are >0 in each column 
+counts = [sum(col) for col in eachcol(greater_than_zero_bool)]
+ten_percent = 0.1*size(greater_than_zero_bool)[1] #10% 
+abundance_data_filter10 = abundance_data[:, counts .> ten_percent] #only 11 species??? 
+
