@@ -98,3 +98,17 @@ abundance_data = Matrix(abundance_data_df)
 dissimilarity_matrix = Distances.pairwise(BrayCurtis(), abundance_data, dims=1) #expects matrix data 
 #Apply PCoA to dissimilarity matrix 
 model = fit(MDS, dissimilarity_matrix; maxoutdim=20, distances=true)
+#Create figure 
+fig = Figure()
+#Create axis and label them 
+ax = Axis(fig[1,1],
+    title = "PCoA of Malawi abundance data",
+    xlabel = "MDS1",
+    ylabel = "MDS2"
+)
+#Modifies the axis to contain data 
+sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Bifidobacterium_longum, alpha=0.5)
+sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Bifidobacterium_breve, alpha=0.5)
+sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Escherichia_coli , alpha=0.5)
+#Save data in png file to display... (for some reason I can't use display function)
+save("data_ext/scatter_plot.png", fig)
