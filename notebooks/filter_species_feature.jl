@@ -88,3 +88,13 @@ column_types .<: Number #boolean vector
 abundance_data_df = result_dataframe[:,column_types .<: Number]
 
 
+
+#if you want to do PCoA with filtered data: abundance_data = abundance_data_filter10 
+
+#PCA of community profile beta diversity bray curtis 
+#Make abundance data in correct matrix format 
+abundance_data = Matrix(abundance_data_df)
+#Compute dissimilarity matrix (used for microbial data) compare every row (sample) against each other 
+dissimilarity_matrix = Distances.pairwise(BrayCurtis(), abundance_data, dims=1) #expects matrix data 
+#Apply PCoA to dissimilarity matrix 
+model = fit(MDS, dissimilarity_matrix; maxoutdim=20, distances=true)
