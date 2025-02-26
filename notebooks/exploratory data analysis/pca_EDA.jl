@@ -50,7 +50,7 @@ fig = Figure()
 
 #Create axis and label them 
 ax = Axis(fig[1,1],
-    title = "PCoA of abundance data",
+    title = "PCoA of ECHO abundance data, colored by cognitive score",
     xlabel = "MDS1",
     ylabel = "MDS2"
 )
@@ -66,7 +66,7 @@ scatter(model.U[:,1], model.U[:,2], color = data.cogScore, alpha=0.5)
 scatter(model.U[:,1], model.U[:,2], color = data.sex, alpha=0.5)
 
 #Can save image in data file 
-save("data_ext/scatter_plot.png", fig)
+save("data_ext/PCoA_abundances_colored.png", fig)
 
 ##
 ##
