@@ -46,3 +46,40 @@
 	mae_train = mean(abs.(yhat_train-y[train]))
 
 
+######################
+# Data visualizations 
+######################
+
+#Scatterplot of ground and truth --> visualize model adequacy 
+
+# Create figure 
+fig = Figure()
+
+# Create axis with titles and labels
+ax = Axis(fig[1,1],
+	title = "Scatter plot of Training and Test data for age prediction",
+	xlabel = "ground truth age in months",
+	ylabel = "prediction age in months"
+)
+
+# Plot scatterplot on axis 
+sc = scatter!(ax, y[train], yhat_train, color=:blue)
+scatter!(ax, y[test], yhat_test, color=:red)
+
+# Place legend on figure 
+Legend(fig[1,2], 
+	[MarkerElement(color = :blue, marker = :circle), MarkerElement(color = :red, marker = :circle)], 
+	["Train", "Test"]) # position of legend, markers, label
+save("data_ext/scatter.png", fig)
+
+
+# Calculate correlation between truth and yhat in training and test set 
+corr_test = cor(y[test], yhat_test)
+corr_train = cor(y[train], yhat_train)
+
+
+# Scatter plot of training and test samples yhat 
+fig = Figure()
+save("data_ext/scatterplot_yhat.png", fig)
+
+### END 
