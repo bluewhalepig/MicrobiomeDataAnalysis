@@ -15,3 +15,34 @@
 	meta_data = select(data, [:cogScore, :subject, :timepoint, :sex, :education, :ageMonths])
 
 
+# Compoments we need to build RFR model:
+	# 1. Access libraries: MLJ, DecisionTree 
+	using MLJ
+	using MLJDecisionTreeInterface
+	using DecisionTree
+	using StatsBase
+
+	# 2. Load the model of decision tree that you want
+	RandomForestRegressor = MLJ.@load RandomForestRegressor pkg=DecisionTree
+
+	# Instantiate a RandomForest Regressor and use to build machine with input (X) and output (y)
+	reg = RandomForestRegressor()
+	X = abundance_data # multivariate input: abundance data 
+	y = meta_data.ageMonths # univariate output: age in months 
+	mach = machine(reg, X, y) 
+
+	# 3. Partition the indexes of the rows into train and test groups 
+	train, test = partition(eachindex(y), 0.7)
+
+	# 4. Train the data at train indexes 
+	MLJ.fit!(mach, rows = train)
+
+	# 5. Test the model using text indexes of the abundance data 
+	yhat_test = MLJ.predict(mach, X[test, :]) #outputs are predicted ages (yhat) 
+	yhat_train = MLJ.predict(mach, X[train, :])
+
+	# 6. Calculate the mean abs error for training set and test set
+	mae_test = mean(abs.(yhat_test - y[test])) 
+	mae_train = mean(abs.(yhat_train-y[train]))
+
+
