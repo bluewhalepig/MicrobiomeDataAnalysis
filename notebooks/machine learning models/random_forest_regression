@@ -1,0 +1,17 @@
+######################
+
+# Mulivariable regression model (Random Forest Regression) on microbial taxa features 
+
+######################
+
+# Arranging the input data we need for model: 
+	# Access libraries: CSV 
+	using CSV 
+	# Load the data 
+	data = CSV.read("data_ext/sample_data.csv", DataFrame)
+	# Select abundance data columns 
+	abundance_data = select(data, Not(:cogScore, :subject, :timepoint, :sex, :education, :ageMonths))
+	# Select meta data columns 
+	meta_data = select(data, [:cogScore, :subject, :timepoint, :sex, :education, :ageMonths])
+
+
