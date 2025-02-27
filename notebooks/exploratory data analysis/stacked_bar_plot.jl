@@ -61,3 +61,22 @@ for genus in genera
     genus_dataset[!, genus] = genus_sums_vector 
 end 
 
+#first(genus_dataset, 6)
+#first(genus_dataset.sex, 6)
+
+# Group data by sex and sum genus abundance 
+grouped_data = groupby(genus_dataset, :sex) 
+
+# Get sex values and names of genera 
+sex_values = unique(genus_dataset.sex) 
+genera # names of unique genera 
+
+# New dataframe for relative abundances by sex 
+genus_abundance_sex = DataFrame(sex=sex_values) # keeps sex 
+
+# Group dataset by sex
+grouped_data = groupby(genus_dataset, :sex)
+
+# Sum only genus abundance columns (not sex nor subject)
+genus_abundance_sex = combine(grouped_data, names(genus_dataset, Not(:sex, :subject)) .=> sum, renamecols=false)
+
