@@ -7,10 +7,10 @@
 using Leap #must be in Project mode start terminal by:  julia --project=.
 using CSV
 using DataFrames
-using Distances
 using CairoMakie 
 using MultivariateStats
 using ColorSchemes
+using Statistics
 
 # Load the csv data into matrix 
 data = CSV.read("data_ext/sample_data.csv", DataFrame) 
@@ -34,7 +34,7 @@ end
 genus_dataset = select(dataset, [:subject, :sex])  # want to keep subject and sex col
 
 # Get unique genera names 
-genera = unique(values(genus_mapping)
+genera = unique(values(genus_mapping))
 
 # Sum up species columns based on same genus 
 
@@ -61,22 +61,64 @@ for genus in genera
     genus_dataset[!, genus] = genus_sums_vector 
 end 
 
-#first(genus_dataset, 6)
+first(genus_dataset, 6)
 #first(genus_dataset.sex, 6)
 
-# Group data by sex and sum genus abundance 
-grouped_data = groupby(genus_dataset, :sex) 
 
-# Get sex values and names of genera 
-sex_values = unique(genus_dataset.sex) 
-genera # names of unique genera 
+# Compute mean abundance for each sex category (group by sex)
+mean_abundance = combine(groupby(genus_dataset, :sex)) do df
+    DataFrame([mean(df[:, col]) for col in genera]', genera)  # compute the means 
+end
 
-# New dataframe for relative abundances by sex 
-genus_abundance_sex = DataFrame(sex=sex_values) # keeps sex 
+# Convert to a format suitable for plotting
+sex = mean_abundance.sex
+genera_repeat = repeat(1:length(genera), outer = 2)  # cycle through 1-length of genera 
+abundance = vec(Matrix(mean_abundance[:, Not(:sex)])) # flatten abundance matrix
 
-# Group dataset by sex
-grouped_data = groupby(genus_dataset, :sex)
 
-# Sum only genus abundance columns (not sex nor subject)
-genus_abundance_sex = combine(grouped_data, names(genus_dataset, Not(:sex, :subject)) .=> sum, renamecols=false)
+
+
+####################### PRACTICE w/ 4 GENUS  ###########################
+p_mean_abundance = select(mean_abundance, :sex, :"Bifidobacterium",  :"Faecalibacterium",  :"Prevotella", :"Ruminococcus")
+genera = names(select(p_mean_abundance, Not(:sex)))
+
+
+genera_repeat = repeat(1:length(genera), outer = 2)  # cycle through 1-length of genera 
+abundance = vec(Matrix(p_mean_abundance[:, Not(:sex)])) # flatten abundance matrix
+
+sex = repeat([1, 2], inner = length(genera))
+
+
+#########################
+# Create stacked bar plot 
+    # x value = sex 
+    # y value = relative abundances colored by genera
+
+# Define colors for each bacterial species
+colors = Makie.wong_colors()[1:length(genera)]  # use default 'wong' colors 
+colors = get(ColorSchemes.seaborn_colorblind6, range(0, 1, length=length(genera)))# generate sum cool colors 
+
+# Create figure and axis
+fig = Figure()
+ax = Axis(fig[1,1], 
+          xticks = (1:2, ["Male", "Female"]),  # Set x-axis labels for sex
+          title = "Bacterial Genus Abundance by Sex",
+          ylabel = "Relative Abundance")
+
+# Create stacked bar plot
+barplot!(ax, sex, abundance,
+         stack = genera_repeat,  # Stack bars by genera
+         color = [colors[i] for i in genera_repeat])  # Assign colors to genera
+
+# Create legend
+labels = genera
+elements = [PolyElement(polycolor = colors[i]) for i in 1:length(genera)]
+Legend(fig[1,2], elements, labels, title = "Bacterial Genera")
+
+# Save the figure
+save("data_ext/bacterial_abundance_by_sex.png", fig)
+
+
+
+
 
