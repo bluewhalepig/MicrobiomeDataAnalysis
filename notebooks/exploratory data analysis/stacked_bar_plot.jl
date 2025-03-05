@@ -139,7 +139,7 @@ end
 
 # Filter out sex column since first row is sex1, second row is sex2 mean abundances 
 mean_abundance = select(mean_abundance, Not(:sex))
-percent = 0.5*size(mean_abundance)[1] # get 50% of abundance 
+percent = 5 # get 5% of abundance 
 counts = [sum(col) for col in eachcol(mean_abundance)] # sum the mean abundances of genera in total 
 bool_filter = counts .> percent
 mean_abundance_filter50 = mean_abundance[:, bool_filter]
@@ -169,10 +169,10 @@ stk = Int64[] #genera indexes for each mean abundance
 
 # Manually generate coordinate inputs for bar plot 
 for i in 1:nrow(mean_abundance)
-    for j in 1:ncol(mean_abundance[:,2:end])
+    for j in 1:ncol(mean_abundance[:,1:end])
         push!(xs, i) 
         push!(stk, j)
-        push!(ys, mean_abundance[i,j+1])
+        push!(ys, mean_abundance[i,j])
     end
 end 
 
@@ -191,7 +191,7 @@ genera_stk = stk # 1-60 genera for sex1... 1-60 genera for sex2...
 fig = Figure(size=(1200,800)) #size = choose height and width of fig 
 ax = Axis(fig[1,1], 
           xticks = (1:2, ["Male", "Female"]),  # Set x-axis labels for sex
-          title = "Bacterial Genus Abundance(50% filter) by Sex",
+          title = "Bacterial Genus Abundance(5% filter) by Sex",
           ylabel = "Relative Abundance")
 
 # Create stacked bar plot
