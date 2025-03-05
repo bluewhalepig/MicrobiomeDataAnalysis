@@ -1,6 +1,7 @@
 #############################################
 
 # Script for a stacked bar plot of genus abundance data 
+# want t o do this bfre filtering genera 
 
 #############################################
 
@@ -71,22 +72,24 @@ mean_abundance = combine(groupby(genus_dataset, :sex)) do df
 end
 
 # Convert to a format suitable for plotting
-sex = mean_abundance.sex
-genera_repeat = repeat(1:length(genera), outer = 2)  # cycle through 1-length of genera 
-abundance = vec(Matrix(mean_abundance[:, Not(:sex)])) # flatten abundance matrix
+#sex = mean_abundance.sex 
+#genera_repeat = repeat(1:length(genera), outer = 2)  # cycle through 1-length of genera 
+#abundance = vec(Matrix(mean_abundance[:, Not(:sex)])) # flatten abundance matrix
 
 
-
+for row in 1:nrow(genus_dataset)
+    @show((sum(genus_dataset[row, 3:end])))
+end
 
 ####################### PRACTICE w/ 4 GENUS  ###########################
 p_mean_abundance = select(mean_abundance, :sex, :"Bifidobacterium",  :"Faecalibacterium",  :"Prevotella", :"Ruminococcus")
 genera = names(select(p_mean_abundance, Not(:sex)))
 
 
-genera_repeat = repeat(1:length(genera), outer = 2)  # cycle through 1-length of genera 
+genera_repeat = repeat(1:length(genera), inner = 2)  # cycle through 1-length of genera 
 abundance = vec(Matrix(p_mean_abundance[:, Not(:sex)])) # flatten abundance matrix
 
-sex = repeat([1, 2], inner = length(genera))
+sex = repeat([1, 2], outer = length(genera))
 
 
 #########################
@@ -106,9 +109,13 @@ ax = Axis(fig[1,1],
           ylabel = "Relative Abundance")
 
 # Create stacked bar plot
-barplot!(ax, sex, abundance,
-         stack = genera_repeat,  # Stack bars by genera
-         color = [colors[i] for i in genera_repeat])  # Assign colors to genera
+barplot!(
+    ax,
+    sex,
+    abundance,
+    stack = genera_repeat,  # Stack the y order for same x coordinate
+    color = [colors[i] for i in genera_repeat]
+)  # Assign colors to genera
 
 # Create legend
 labels = genera
@@ -119,6 +126,53 @@ Legend(fig[1,2], elements, labels, title = "Bacterial Genera")
 save("data_ext/bacterial_abundance_by_sex.png", fig)
 
 
+xs = Float64[]
+ys = Float64[]
+stk = Int64[] #stack 
+
+for i in 1:nrow(mean_abundance)
+    for j in 1:ncol(mean_abundance[:,2:end])
+        push!(xs, i)
+        push!(stk, j)
+        push!(ys, mean_abundance[i,j+1])
+    end
+end 
+
+sex = xs
+abundance = ys
+genera_repeat = stk
+
+
+colors = get(ColorSchemes.seaborn_colorblind6, range(0, 1, length=length(genera)))#
+# Create figure and axis
+fig = Figure(size=(1200,800))
+ax = Axis(fig[1,1], 
+          xticks = (1:2, ["Male", "Female"]),  # Set x-axis labels for sex
+          title = "Bacterial Genus Abundance by Sex",
+          ylabel = "Relative Abundance")
+
+# Create stacked bar plot
+barplot!(
+    ax,
+    sex,
+    abundance,
+    stack = genera_repeat,  # Stack the y order for same x coordinate
+    color = [colors[i] for i in genera_repeat]
+)  # Assign colors to genera
+
+# Create legend
+labels = genera
+elements = [PolyElement(polycolor = colors[i]) for i in 1:length(genera)]
+Legend(fig[1,2], elements, labels, title = "Bacterial Genera", nbanks=3)
+
+# Save the figure
+save("data_ext/bacterial_abundance_by_sex.png", fig)
 
 
 
+# Only show the top genera and couple all others in Other category 
+# Stratify by months 
+
+# Find reasonable cut off % of abundance 
+
+# 
