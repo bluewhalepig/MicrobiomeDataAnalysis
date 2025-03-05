@@ -62,108 +62,62 @@ for genus in genera
     genus_dataset[!, genus] = genus_sums_vector 
 end 
 
+# Check first 6 rows of dataset 
 first(genus_dataset, 6)
-#first(genus_dataset.sex, 6)
-
 
 # Compute mean abundance for each sex category (group by sex)
 mean_abundance = combine(groupby(genus_dataset, :sex)) do df
     DataFrame([mean(df[:, col]) for col in genera]', genera)  # compute the means 
 end
 
-# Convert to a format suitable for plotting
-#sex = mean_abundance.sex 
-#genera_repeat = repeat(1:length(genera), outer = 2)  # cycle through 1-length of genera 
-#abundance = vec(Matrix(mean_abundance[:, Not(:sex)])) # flatten abundance matrix
-
-
-for row in 1:nrow(genus_dataset)
-    @show((sum(genus_dataset[row, 3:end])))
-end
-
-####################### PRACTICE w/ 4 GENUS  ###########################
-p_mean_abundance = select(mean_abundance, :sex, :"Bifidobacterium",  :"Faecalibacterium",  :"Prevotella", :"Ruminococcus")
-genera = names(select(p_mean_abundance, Not(:sex)))
-
-
-genera_repeat = repeat(1:length(genera), inner = 2)  # cycle through 1-length of genera 
-abundance = vec(Matrix(p_mean_abundance[:, Not(:sex)])) # flatten abundance matrix
-
-sex = repeat([1, 2], outer = length(genera))
-
-
-#########################
-# Create stacked bar plot 
     # x value = sex 
     # y value = relative abundances colored by genera
+#########################
+# Create stacked bar plot 
 
-# Define colors for each bacterial species
-colors = Makie.wong_colors()[1:length(genera)]  # use default 'wong' colors 
-colors = get(ColorSchemes.seaborn_colorblind6, range(0, 1, length=length(genera)))# generate sum cool colors 
+    # Define empty lists for x-axis, y-axis, and stacking coordinates 
+    xs = Float64[] #sex indexes for each mean abundance 
+    ys = Float64[] #list of mean abundance 
+    stk = Int64[] #genera indexes for each mean abundance 
 
-# Create figure and axis
-fig = Figure()
-ax = Axis(fig[1,1], 
-          xticks = (1:2, ["Male", "Female"]),  # Set x-axis labels for sex
-          title = "Bacterial Genus Abundance by Sex",
-          ylabel = "Relative Abundance")
-
-# Create stacked bar plot
-barplot!(
-    ax,
-    sex,
-    abundance,
-    stack = genera_repeat,  # Stack the y order for same x coordinate
-    color = [colors[i] for i in genera_repeat]
-)  # Assign colors to genera
-
-# Create legend
-labels = genera
-elements = [PolyElement(polycolor = colors[i]) for i in 1:length(genera)]
-Legend(fig[1,2], elements, labels, title = "Bacterial Genera")
-
-# Save the figure
-save("data_ext/bacterial_abundance_by_sex.png", fig)
-
-
-xs = Float64[]
-ys = Float64[]
-stk = Int64[] #stack 
-
+# Manually generate coordinate inputs for bar plot 
 for i in 1:nrow(mean_abundance)
     for j in 1:ncol(mean_abundance[:,2:end])
-        push!(xs, i)
+        push!(xs, i) 
         push!(stk, j)
         push!(ys, mean_abundance[i,j+1])
     end
 end 
 
-sex = xs
-abundance = ys
-genera_repeat = stk
-
-
-colors = get(ColorSchemes.seaborn_colorblind6, range(0, 1, length=length(genera)))#
 # Create figure and axis
-fig = Figure(size=(1200,800))
+fig = Figure(size=(1200,800)) #size = choose height and width of fig 
 ax = Axis(fig[1,1], 
           xticks = (1:2, ["Male", "Female"]),  # Set x-axis labels for sex
           title = "Bacterial Genus Abundance by Sex",
           ylabel = "Relative Abundance")
+
+# Define colors for each bacterial genera 
+#colors = Makie.wong_colors()[1:length(genera)]  # generate default 'wong' colors 
+colors = get(ColorSchemes.seaborn_colorblind6, range(0, 1, length=length(genera)))# generate sum cool colors 
+
+# Assign inputs for barplot 
+sex = xs 
+abundance = ys
+genera_stk = stk
 
 # Create stacked bar plot
 barplot!(
     ax,
     sex,
     abundance,
-    stack = genera_repeat,  # Stack the y order for same x coordinate
-    color = [colors[i] for i in genera_repeat]
-)  # Assign colors to genera
+    stack = genera_stk,  # Stack the y order for same x coordinate
+    color = [colors[i] for i in genera_stk] # Assign colors for each genera 
+)  
 
 # Create legend
 labels = genera
 elements = [PolyElement(polycolor = colors[i]) for i in 1:length(genera)]
-Legend(fig[1,2], elements, labels, title = "Bacterial Genera", nbanks=3)
+Legend(fig[1,2], elements, labels, title = "Bacterial Genera", nbanks=3) #nbanks = divide legend up into 3 columns 
 
 # Save the figure
 save("data_ext/bacterial_abundance_by_sex.png", fig)
