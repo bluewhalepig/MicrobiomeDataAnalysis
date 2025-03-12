@@ -72,7 +72,7 @@ age_categories = String["0-50mo", "50-100mo",">100"]
 # Store the real_age and age_category associated with real_age in a dictionary: 
 month_mapping = Dict() 
 
-# 
+# !!!!!!!!!! This month_mapping dictionary is not mapping ages to category (values outside of range 18-120 months)
 for index in 1:length(dataset.ageMonths)
   if dataset[index,:ageMonths] <= 50 #ages less than 3mo 
     month_mapping[index] = "0-50mo"
