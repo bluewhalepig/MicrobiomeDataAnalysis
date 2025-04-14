@@ -7,3 +7,4 @@ Manifest.toml
 #^^ should be put in every .gitignore file!! 
 data/*
 data_ext/*
+data_figures/*
