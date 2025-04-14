@@ -128,9 +128,52 @@ common_ids = innerjoin(zymo_merged, seqprep_df, on = [:zymo_code => :biospecimen
 filename = "subject_timepoint_sample_rel.csv"
 CSV.write(joinpath("data", filename), common_ids)
 
-# Get rid of timepoint column 
-output_df = select(common_ids, Not(:timepoint))
+#####
+# STEP 2: gather the metadata and taxprofiles
+#####
 
-# Export output df into csv? 
+## First, load the taxonomic profiles. They should have a column that is their SEQID.
 
-CSV.write()
+## Then, load the Khula HIV metadata. It should have a SUBJECT column.
+# From this table, select only what matters to you - HIV status, in this case, but also anything else of interest
+
+## Finally, join the HIV Metadata and the Taxonomic Profiles to the master reltable. You should still have all 549 rows, except if the newer samples were not processed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-------------------------------------
+# #Plot a histogram of the ages column 
+# ages = select(recovered_data, "ageMonths") #dataframe 
+ages = output_df.timepoint_id #--> returns same values in vector form 
+# recovered_data.ageMonths #returns same value vector
+ages_int = parse.(Int, replace.(ages, "mo" => ""))
+
+
+fig = Figure()
+ax = Axis(fig[1, 1], xlabel = "Age (months)", ylabel = "Count", title = "Histogram of Ages")
+hist!(ax, ages_int, bins = 15, normalization = :none) # histogram expects vector value 
+
+# Save the figure
+save("data_ext/hist_ages_khula.png", fig)
+
+
+
+
+#JOin table output -> add subject id to grand metadatatable. 
+# proportion of HIV per sample 
+
+# Still getting replicates of subject id 
+
