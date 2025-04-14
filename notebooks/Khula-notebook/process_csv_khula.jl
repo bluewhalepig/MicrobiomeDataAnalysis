@@ -120,8 +120,13 @@ subset!(seqprep_df, :biospecimen => x -> x .!= "KMZ43460")
 ## Get rid of this sample for SEQPREP SEQ00467
 subset!(seqprep_df, :uid => x -> x .!= "SEQ00467")
 
+
 # Do inner join on zymo_code and biospecimen to get common ids 
-common_ids = innerjoin(zyme_merged, seqprep_df, on = [:zymo_code => :biospecimen]) # the '=>' is a pair. sample and specimenID are the two header names that you are comparing 
+common_ids = innerjoin(zymo_merged, seqprep_df, on = [:zymo_code => :biospecimen]) # the '=>' is a pair. sample and specimenID are the two header names that you are comparing 
+
+# Export output df into csv
+filename = "subject_timepoint_sample_rel.csv"
+CSV.write(joinpath("data", filename), common_ids)
 
 # Get rid of timepoint column 
 output_df = select(common_ids, Not(:timepoint))
