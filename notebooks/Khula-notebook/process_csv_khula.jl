@@ -103,17 +103,22 @@ zyme_merged = dropmissing(zyme_merged, :zymo_code)
 # Standardize zymo_code to uppercase 
 zyme_merged[!, :zymo_code] = uppercase.(zyme_merged.zymo_code)
 
-#Drop missing
+# Drop the rows missing biospecimen ids 
 seqprep_df = dropmissing(seqprep_df, :biospecimen)
 # Standardize biospecimen column to uppercase
 seqprep_df[!, :biospecimen] = uppercase.(seqprep_df.biospecimen) # the same biospecimen tube can be sequenced multipletimes, repeated 
 
-# check for unique 
+# Check for unique biospecimens 
 unique(seqprep_df.biospecimen) # some of the biospecimen tubes were sequenced twice one for metatranscriptomics and metagenomics 
-unique(seqprep_df.exclude)
+#923 unique biospecimen in seqprep_df but 925 total 
 
-#3671
-#3777 # 
+# Must get rid of duplicates... one of them is malawi and other is sa 
+# "KMZ43460"
+## Get rid of both tose rows, since it is pending resolution.
+subset!(seqprep_df, :biospecimen => x -> x .!= "KMZ43460")
+# "Z3MO-95875"
+## Get rid of this sample for SEQPREP SEQ00467
+subset!(seqprep_df, :uid => x -> x .!= "SEQ00467")
 
 # Do inner join on zymo_code and biospecimen to get common ids 
 common_ids = innerjoin(zyme_merged, seqprep_df, on = [:zymo_code => :biospecimen]) # the '=>' is a pair. sample and specimenID are the two header names that you are comparing 
