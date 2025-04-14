@@ -52,3 +52,30 @@ for genus in genera
     # Store the genus abundances in the genus dataset
     genus_dataset[!, genus] = genus_sums_vector 
 end 
+
+# Compute mean abundance for each timepoimt category (group by time months)
+mean_abundance = combine(groupby(genus_dataset, :timepoint_id)) do df
+    DataFrame([mean(df[:, col]) for col in genera]', genera)  # compute the means 
+end
+
+mean_abundance_only = select(mean_abundance, Not(:timepoint_id))
+
+percent = 5 # get 5% of abundance 
+counts = [sum(col) for col in eachcol(mean_abundance_only)] # sum the mean abundances of genera in total 
+bool_filter = counts .> percent
+mean_abundance_filter50 = mean_abundance_only[:, bool_filter]
+
+# Couple all other mean abundances in OTHER category 
+other_mean_abundance = mean_abundance_only[:, Not(bool_filter)]
+other = []
+for row in 1:nrow(other_mean_abundance)
+    push!(other, sum(other_mean_abundance[row, :]))
+end 
+
+# Add other column to filtered mean abundance data 
+mean_abundance_filter50.Other = other
+
+mean_abundance = mean_abundance_filter50
+genera = names(mean_abundance)
+
+
