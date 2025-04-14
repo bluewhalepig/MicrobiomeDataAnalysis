@@ -13,7 +13,7 @@ using ColorSchemes
 using Statistics
 
 # Load the csv data into matrix 
-data = CSV.read("data_ext/sample_data.csv", DataFrame) 
+data = CSV.read("data_ext/sample_data.csv", DataFrame) #contains both metadata and abundance data 
 
 # Select subject, ageMonths, and abundances for dataset
 dataset = select(data, Not(:cogScore, :timepoint, :education)) #168 columns 
