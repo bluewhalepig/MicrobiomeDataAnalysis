@@ -20,7 +20,7 @@ manual_path= "/grace/sequencing/processed/mgx/metaphlan"
 replace_pattern = r"profile" #finds all files with "profile" in name
 
 #Load the sequencing files with taxonomic community "profile" 
-community_profile = Leap.load_raw_metaphlan(manual_path; replace_pattern=replace_pattern)
+community_profile = Leap.load_raw_metaphlan(manual_path, ;replace_pattern=replace_pattern)
 # has features (row) and samples (col)...
 #.... is a CommunityProfile{Float64, Taxon, MicrobiomeSample} with 1626 features in 2965 samples
 ####Features are taxonomic names of different rank, ie. Bacteria, Eukaryota, Proteobacteria
@@ -60,6 +60,10 @@ sample_names[1].sample_base
 #samples would be rows and features would be columns (not julia)
 #but samples are columns and features are rows in JULIA 
 #---allows for more faster computing "column major" matrix 
+
+matches_bool = map(x -> x.sample_base, samples(genus_community_profile)) .∈ Ref(malawi_table.seqid)
+
+#map function takes a function and applies to every item in a matrix ... use to filter the 
 
 
 #Manually filter the columns from sample_names and checks malawi_table.seqid 
@@ -105,6 +109,7 @@ ax = Axis(fig[1,1],
     xlabel = "MDS1",
     ylabel = "MDS2"
 )
+
 #Modifies the axis to contain data 
 sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Bifidobacterium_longum, alpha=0.5)
 sc = scatter!(ax, model.U[:,1], model.U[:,2], color = abundance_data_df.Bifidobacterium_breve, alpha=0.5)
@@ -138,3 +143,5 @@ corss = DataFrame(:species => names(abundance_data_df), :corr_PC1 => corr_PC1, :
 
 sorted_PC1 = sort(corss, :corr_PC1) #E coli??
 sorted_PC2 = sort(corss, :corr_PC2) 
+
+### END 
