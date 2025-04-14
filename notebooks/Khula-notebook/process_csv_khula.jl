@@ -33,11 +33,22 @@ seqdata = CSV.read("data_ext/SequencingPrep-HIV-Samples.csv", DataFrame)
 
 datarequest = CSV.read("data_ext/2025-03-07-KhulaDataRequest - Sheet1.csv", DataFrame) # ask about password protection
 
-# Select zymo code columns 
-zymo_df = select(datarequest, :zymo_code_3m, :zymo_code_6m,:zymo_code_18m, :zymo_code_12m,:zymo_code_24m)
+function nonunique4(x::AbstractArray{T}) where T
+    status = Dict{T, Bool}()
+    duplicatedvector = Vector{T}()
+    for i in x
+        if haskey(status, i)
+            if status[i]
+                push!(duplicatedvector, i)
+                status[i] = false
+            end
+        else
+            status[i] = true
+        end
+    end
+    duplicatedvector
+end
 
-# select id and biospecimen columns
-seqprep_df = select(seqdata, :uid, :biospecimen, :exclude)
 
 # #Data summary 
     # length(unique(datarequest.subject_id)) #394
