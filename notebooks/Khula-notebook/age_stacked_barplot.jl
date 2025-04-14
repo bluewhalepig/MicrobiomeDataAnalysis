@@ -79,3 +79,56 @@ mean_abundance = mean_abundance_filter50
 genera = names(mean_abundance)
 
 
+#########################
+# Create stacked bar plot 
+    # x = stratified by age in months 
+    # y = relative abundances colored by genera 
+
+# Define empty lists for x-axis, y-axis, and stacking coordinates 
+xs = Float64[] #age month indexes for each mean abundance 
+ys = Float64[] #list of mean abundance 
+stk = Int64[] #genera indexes for each mean abundance 
+
+# Manually generate coordinate inputs for bar plot 
+for i in 1:nrow(mean_abundance)
+    for j in 1:ncol(mean_abundance[:,:])
+        push!(xs, i) 
+        push!(stk, j)
+        push!(ys, mean_abundance[i,j])
+    end
+end 
+
+unique(genus_dataset.timepoint_id)
+
+# Create figure and axis
+fig = Figure(size=(700,500)) #size = choose height and width of fig 
+ax = Axis(fig[1,1], 
+          xticks = (1:3, ["3mo", "6mo", "12mo"]),  # Set x-axis labels for sex
+          title = "Bacterial Genus Abundance by Age in Months",
+          ylabel = "Relative Abundance")
+
+# Define colors for each bacterial genera 
+#colors = Makie.wong_colors()[1:length(genera)]  # generate default 'wong' colors 
+colors = get(ColorSchemes.seaborn_colorblind6, range(0, 1, length=length(genera)))# generate sum cool colors 
+
+# Assign inputs for barplot 
+age = xs # 1... 2...
+abundance = ys # mean abundances 
+genera_stk = stk # we want 33 elements 
+
+# Create stacked bar plot
+barplot!(
+    ax,
+    age,
+    abundance,
+    stack = genera_stk,  # Stack the y order for same x coordinate
+    color = [colors[i] for i in genera_stk] # Assign colors for each genera 
+)  
+# Create legend
+labels = genera
+elements = [PolyElement(polycolor = colors[i]) for i in 1:length(genera)]
+Legend(fig[1,2], elements, labels, title = "Bacterial Genera", nbanks=1) #nbanks = divide legend up into 3 columns 
+
+# Save the figure
+save("data_figures/plot_genus_abundances_by_month.png", fig)
+
