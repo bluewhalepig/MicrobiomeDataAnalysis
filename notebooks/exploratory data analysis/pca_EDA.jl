@@ -9,18 +9,17 @@ using Distances #PlotlyJS doesn't install...
 using Distributions 
 
 #Load the data into matrix (data format that PCA takes)
-data = CSV.read("data_ext/sample_data.csv", DataFrame) 
+data = CSV.read("data_ext/sample_data.csv", DataFrame) #contains both metadata and abundance data 
+
+#Separate abundance data from metadata 
 abundance_data = select(data, Not(:cogScore, :subject, :timepoint, :sex, :education, :ageMonths))
 abundance_data = Matrix(abundance_data)
-
-
 
 #cog_data = select(data, :cogScore)
 
 #Preprocessing the data...
 #### PCA input is "horizontal data" so, each row is a feature and each column is a sample 
 ##its already horizontal so no need to preprocess! 
-
 
 #Compute dissimilarity matrix (used for microbial data) 
 dissimilarity_matrix = Distances.pairwise(BrayCurtis(), abundance_data, dims=1) #expects matrix data 
@@ -34,7 +33,7 @@ model = fit(PCA, dissimilarity_matrix; maxoutdim=20)
 
 #Scree plot to determine how many PC we need
 lines(model.prinvars ./sum(model.prinvars))
-    #find elbow, in this case @3
+    #find elbow, in this case 
 
 #NMDS PCoA (principal coordinate analysis)
 model = fit(MDS, dissimilarity_matrix; maxoutdim=20, distances=true)
