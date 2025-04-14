@@ -29,6 +29,7 @@ using CairoMakie
 #####
 
 # Import Sequencing metadata and datarequest table from KHULA 
+seqdata = CSV.read("data_ext/SequencingPrep-HIV-Samples.csv", DataFrame)
 
 datarequest = CSV.read("data_ext/2025-03-07-KhulaDataRequest - Sheet1.csv", DataFrame) # ask about password protection
 
