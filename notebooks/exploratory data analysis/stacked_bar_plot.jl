@@ -213,12 +213,3 @@ Legend(fig[1,2], elements, labels, title = "Bacterial Genera") #nbanks = divide 
 # Save the figure
 save("data_ext/filtered_abundance_by_sex.png", fig)
 
-
-
-
-# Only show the top genera and couple all others in Other category 
-# Stratify by months 
-
-# Find reasonable cut off % of abundance 
-
-# 
