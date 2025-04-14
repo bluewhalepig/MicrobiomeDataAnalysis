@@ -73,9 +73,20 @@ end
     # unique(datarequest.hiv_mom_diagnosed_selfreport)
     # (3+16+92)/394
 
-# Merged zymo dataframe
-zyme_merged = stack(zymo_df, Not([]), variable_name = "timepoint", value_name = "zymo_code")
+# Select zymo code columns into long format
+zymo_df = select(datarequest, :subject_id, :zymo_code_3m, :zymo_code_6m,:zymo_code_18m, :zymo_code_12m,:zymo_code_24m)
 
+# select id and biospecimen columns
+seqprep_df = select(seqdata, :uid, :biospecimen)
+
+# Filter out exclude == "checked" 
+# ismissing_exclude = map(e-> ismissing(e), seqprep_df.exclude)
+
+# seqprep_df = seqprep_df[ismissing_exclude, :]
+
+# Stack dataframe based on zymo codes 
+zymo_merged = stack(zymo_df, Not(:subject_id), variable_name = "timepoint", value_name = "zymo_code")
+# Create mapping dictionary to make timepoint_id 
 map_time = Dict(
     "zymo_code_3m" => "3mo",
     "zymo_code_6m" => "6mo",
