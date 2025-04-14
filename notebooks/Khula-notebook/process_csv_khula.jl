@@ -95,13 +95,13 @@ map_time = Dict(
     "zymo_code_24m" => "24mo"
 )
 
-# Apply this mapping to the timepoint column
-zyme_merged[!, :timepoint_id] = map(t -> get(map_time, t, t), zyme_merged.timepoint)
+# Apply mapping dictionary to dataframe 
+zymo_merged[!, :timepoint_id] = map(t -> get(map_time, t, t), zymo_merged.timepoint)
 
-#Drop missing zymo_code 
-zyme_merged = dropmissing(zyme_merged, :zymo_code)
-# Standardize zymo_code to uppercase 
-zyme_merged[!, :zymo_code] = uppercase.(zyme_merged.zymo_code)
+# Drop missing zymo_code 
+zymo_merged = dropmissing(zymo_merged, :zymo_code)
+# Standardize zymo_code to uppercase letters 
+zymo_merged[!, :zymo_code] = uppercase.(zymo_merged.zymo_code)
 
 # Drop the rows missing biospecimen ids 
 seqprep_df = dropmissing(seqprep_df, :biospecimen)
