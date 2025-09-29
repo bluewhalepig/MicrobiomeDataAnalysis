@@ -28,4 +28,3 @@ CSV.write(output_file, output_data)
 #Print confirmation that code has run 
 print("Extraction complete! Saved to: ", output_file) 
 
-

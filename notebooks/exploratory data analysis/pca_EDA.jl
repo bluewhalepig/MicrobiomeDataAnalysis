@@ -6,19 +6,20 @@ using RDatasets
 using CSV
 using Microbiome
 using Distances #PlotlyJS doesn't install...
+using Distributions 
 
 #Load the data into matrix (data format that PCA takes)
-data = CSV.read("sample_data.csv", DataFrame) 
+data = CSV.read("data_ext/sample_data.csv", DataFrame) #contains both metadata and abundance data 
+
+#Separate abundance data from metadata 
 abundance_data = select(data, Not(:cogScore, :subject, :timepoint, :sex, :education, :ageMonths))
 abundance_data = Matrix(abundance_data)
-
 
 #cog_data = select(data, :cogScore)
 
 #Preprocessing the data...
 #### PCA input is "horizontal data" so, each row is a feature and each column is a sample 
 ##its already horizontal so no need to preprocess! 
-
 
 #Compute dissimilarity matrix (used for microbial data) 
 dissimilarity_matrix = Distances.pairwise(BrayCurtis(), abundance_data, dims=1) #expects matrix data 
@@ -32,7 +33,7 @@ model = fit(PCA, dissimilarity_matrix; maxoutdim=20)
 
 #Scree plot to determine how many PC we need
 lines(model.prinvars ./sum(model.prinvars))
-    #find elbow, in this case @3
+    #find elbow, in this case 
 
 #NMDS PCoA (principal coordinate analysis)
 model = fit(MDS, dissimilarity_matrix; maxoutdim=20, distances=true)
@@ -43,16 +44,18 @@ lines(model.λ ./sum(model.λ)) #result: elbow at 3
 
 #Plotting PC1 and PC2 of PCoA result
 #model.U contains the scores of the samples on the principal components
-#Create figure
+#Create figure 
 fig = Figure()
 
-#Create axis 
-ax = Axis(fig[1,1])
+#Create axis and label them 
+ax = Axis(fig[1,1],
+    title = "PCoA of ECHO abundance data, colored by cognitive score",
+    xlabel = "MDS1",
+    ylabel = "MDS2"
+)
 
 #Modifies the axis to contain data 
 sc_age = scatter!(ax, model.U[:,1], model.U[:,2], color = data.ageMonths, alpha=0.5)
-
-
 
 #Coloring plot by cognitive scores
 scatter(model.U[:,1], model.U[:,2], color = data.cogScore, alpha=0.5)
@@ -60,6 +63,9 @@ scatter(model.U[:,1], model.U[:,2], color = data.cogScore, alpha=0.5)
 
 #Coloring plot by sex
 scatter(model.U[:,1], model.U[:,2], color = data.sex, alpha=0.5)
+
+#Can save image in data file 
+save("data_ext/PCoA_abundances_colored.png", fig)
 
 ##
 ##

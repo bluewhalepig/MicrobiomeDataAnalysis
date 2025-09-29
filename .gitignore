@@ -1,0 +1,10 @@
+#List of things that git will ignore.. ie sensitive data in csv format
+*/*.tsv
+*/*.xlsx
+*/*.csv 
+.CondaPkg
+Manifest.toml
+#^^ should be put in every .gitignore file!! 
+data/*
+data_ext/*
+data_figures/*

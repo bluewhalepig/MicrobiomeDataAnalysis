@@ -1,7 +1,7 @@
 using CSV, DataFrames, CairoMakie
 
 # Load the data of samples that were recovered
-recovered_data = CSV.read("sample_data.csv", DataFrame)
+recovered_data = CSV.read("data_ext/sample_data.csv", DataFrame)
 
 
 #Plot a histogram of the ages column 
